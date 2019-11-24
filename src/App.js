@@ -3,6 +3,7 @@ import './App.css';
 
 import GuessedWords from './GuessedWords';
 import Congrats from './Congrats';
+import { getLetterMatchCount } from '../helpers';
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class App extends Component {
         <Congrats success={true} />
         <GuessedWords guessedWords={[{
           guessedWord: 'train',
-          letterMatchCount: 3
+          letterMatchCount: getLetterMatchCount('train', 'party')
         }]} />
       </div>
     );
