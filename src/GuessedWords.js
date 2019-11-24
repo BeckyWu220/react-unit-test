@@ -8,8 +8,8 @@ const GuessedWords = (props) => {
                 <span data-test="instruction-message"></span> :
                 <div>
                     <h3>Guessed Words</h3>
-                    <table data-test="words-table">
-                        <thead>
+                    <table data-test="words-table" className="table table-sm">
+                        <thead className="thead-light">
                             <tr>
                                 <th>Words</th>
                                 <th>Matching Letters</th>

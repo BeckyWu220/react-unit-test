@@ -5,7 +5,7 @@ const Congrats = (props) => {
     return (
         <div data-test="component-congrats">
             { props.success && 
-                <span data-test="congrats-message">
+                <span data-test="congrats-message" className="alert alert-success">
                     Congratulations! You guessed the word!
                 </span>
             }
