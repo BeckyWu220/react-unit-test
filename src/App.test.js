@@ -57,7 +57,7 @@ const findByTestAttr = (wrapper, val) => {
   return wrapper.find(`[data-test='${val}']`); //Find by 'data-test' props that is added for testing purpose in the component.
 }
 
-test('renders with error', () => {
+test('renders without error', () => {
   const wrapper = setup();
   const appComponent = findByTestAttr(wrapper, 'component-app');
   expect(appComponent.length).toBe(1);
