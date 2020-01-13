@@ -3,7 +3,7 @@ import './App.css';
 
 import GuessedWords from './GuessedWords';
 import Congrats from './Congrats';
-import { getLetterMatchCount } from '../helpers';
+import { getLetterMatchCount } from './helpers';
 
 class App extends Component {
   constructor(props) {
