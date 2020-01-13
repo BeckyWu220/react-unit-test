@@ -8,10 +8,12 @@ export const checkProps = (component, conformingProps) => {
     expect(propError).toBeUndefined();
 }
 
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import rootReducer from '../src/reducers';
+import { middlewares } from '../src/configureStore';
 export const storeFactory = (initialState) => {
-    return createStore(rootReducer, initialState);
+    const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+    return createStoreWithMiddleware(rootReducer, initialState);
     //Here we create a actual store instead of mocking one.
     //redux-mock-store can be used to mock store. However, it couldn't test changes to state.
 }
