@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import { findByTestAttr, storeFactory } from '../test/testUtils';
-import Input from './Input';
+import Input, { UnconnectedInput } from './Input';
 
 const setup = (initialState={}) => {
     const store = storeFactory(initialState);
@@ -85,6 +85,44 @@ describe('redux props', () => {
         const wrapper = setup();
         const guessWordProp = wrapper.instance().props.guessWord;
         expect(guessWordProp).toBeInstanceOf(Function);
-        
+
     })
+});
+
+describe('`guessWord` call on Submit button click', () => {
+    let guessWordMock;
+    let wrapper;
+    const guessedWord = "train";
+    beforeEach(() => {
+        // Create a mock function `guessWordMock`
+        // Create unconnected Input commponent wrapper to pass the mock function to its `guessWord` props.
+        guessWordMock = jest.fn();
+        wrapper = shallow(<UnconnectedInput guessWord={guessWordMock} />);
+    })
+    test('runs on submit click', () => {
+        // Simulate a button click on the submit button, and check if the mock function is called. 
+        const submitButton = findByTestAttr(wrapper, "submit-button");
+        submitButton.simulate('click', { preventDefault() {} });
+        const getGuessWordCallCount = guessWordMock.mock.calls.length;
+        expect(getGuessWordCallCount).toBe(1);
+    });
+
+    test('runs with the input box contents as argument', () => {
+        // use `setState()` to simulate the input box contents.
+        wrapper.setState({ currentGuess: guessedWord });
+        const submitButton = findByTestAttr(wrapper, "submit-button");
+        submitButton.simulate('click', { preventDefault() {} });
+
+        console.log(guessWordMock.mock.calls[0][0])
+        const guessWordArg = guessWordMock.mock.calls[0][0]; // Get the first argument in the first time calling the mock function.
+        expect(guessWordArg).toBe(guessedWord);
+    });
+
+    test('input box clears on submit', () => {
+        wrapper.setState({ currentGuess: guessedWord });
+        const submitButton = findByTestAttr(wrapper, "submit-button");
+        submitButton.simulate('click', { preventDefault() {} });
+        
+        expect(wrapper.state('currentGuess')).toBe('');
+    });
 });
