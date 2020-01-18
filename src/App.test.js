@@ -12,7 +12,7 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import EnzymeAdapter from 'enzyme-adapter-react-16';
 
-import App from './App';
+import App, { UnconnectedApp } from './App';
 import { storeFactory } from '../test/testUtils';
 import { getSecretWord } from './actions';
 
@@ -91,6 +91,34 @@ describe('redux props', () => {
     const getSecretWordProp = wrapper.instance().props.getSecretWord;
     expect(getSecretWord).toBeInstanceOf(Function);
   });
+})
+
+test('`getSecretWord` runs on App mount.', () => {
+  // Create `getSecretWord` mock function `getSecretWordMock`
+  // The mock function is an empty functiont that does nothing but being a placeholder to check later if the mock function runs.
+  const getSecretWordMock = jest.fn();
+
+  // Replace `getSecretWord` with mock in the props of unconnected App component.
+  const wrapper = shallow(
+    <UnconnectedApp
+      getSecretWord={getSecretWordMock}
+      success={false}
+      guessedWords={[]}
+    />
+  )
+  // `success` and `guessedWords` are not related to this test, however, since they are marked as `isRequired` through `PropTypes`, we add some values to them to make sure the prop types test is passing.
+
+  // Unconnect App component is used here instead of connected App component because we just need to pass the mock function into `getSecretWord` prop to check if the mock function is called.
+  // If we use the connected App component, the `getSecretWord` needs to be gotten from redux store, which involves unnecessary redux store test.
+  // At the top of the file, we import `UnconnectApp` so we can assign the mock function to its `getSecretWord` props.
+  
+  // Run `componentDidMount()` to check if the mock function runs once.
+  wrapper.instance().componentDidMount();
+
+  // Get the times the mock function runs, and expect it run once.
+  const getSecretWordCallCount = getSecretWordMock.mock.calls.length;
+  expect(getSecretWordCallCount).toBe(1);
+
 })
 
 

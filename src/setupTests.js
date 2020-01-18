@@ -6,4 +6,7 @@
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ 
+  adapter: new Adapter(),
+  disableLifecycleMethods: true, // We disable the lifecycle methods to run automatically whenever wrapper is created. In this way, we can manually call lifecycle method as we need in the test.
+});
