@@ -13,6 +13,8 @@ import Enzyme, { shallow } from 'enzyme';
 import EnzymeAdapter from 'enzyme-adapter-react-16';
 
 import App from './App';
+import { storeFactory } from '../test/testUtils';
+import { getSecretWord } from './actions';
 
 //Config Enzyme using proper EnzymeAdapter.
 Enzyme.configure({ adapter: new EnzymeAdapter() });
@@ -38,11 +40,10 @@ Enzyme.configure({ adapter: new EnzymeAdapter() });
  * @param {any} state - Initial state for setup.
  * @returns {ShallowWrapper}
  */
-const setup = (props = {}, state = null) => {
-  const wrapper = shallow(<App {...props} />); //Use Enzyme's shallow() function to render a component. Shallow means render the component without any of its children components.
-  if (state) {
-    wrapper.setState(state); //Use given state to set state for ShallowWrapper
-  }
+const setup = (state = {}) => {
+  const store = storeFactory(state);
+  const wrapper = shallow(<App store={store} />).dive().dive(); //Use Enzyme's shallow() function to render a component. Shallow means render the component without any of its children components.
+  // console.log(wrapper.instance());
   return wrapper;
 }
 
@@ -62,4 +63,34 @@ test('renders without error', () => {
   const appComponent = findByTestAttr(wrapper, 'component-app');
   expect(appComponent.length).toBe(1);
 });
+
+describe('redux props', () => {
+  test('has access to `success` state as props', () => {
+    const success = true;
+    const wrapper = setup({ success });
+    const successProp = wrapper.instance().props.success;
+    expect(successProp).toBe(success);
+  });
+  test('has access to `secretWord` state as props', () => {
+    const secretWord = 'party';
+    const wrapper = setup({ secretWord });
+    const secretWordProp = wrapper.instance().props.secretWord;
+    expect(secretWordProp).toBe(secretWord);
+  });
+  test('has access to `guessedWords` as props', () => {
+    const guessedWords = [{
+      guessedWord: 'train',
+      letterMatchCount: 3
+    }];
+    const wrapper = setup({ guessedWords });
+    const guessedWordsProp = wrapper.instance().props.guessedWords;
+    expect(guessedWordsProp).toEqual(guessedWords); //Use `toEqual` to compare two arrays.
+  });
+  test('has `getSecretWord` action creator is a function on the props', () => {
+    const wrapper = setup();
+    const getSecretWordProp = wrapper.instance().props.getSecretWord;
+    expect(getSecretWord).toBeInstanceOf(Function);
+  });
+})
+
 
